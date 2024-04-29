@@ -257,6 +257,60 @@ class ClassifierPerceptronBiais(ClassifierPerceptron):
                 self.allw.append(copy.deepcopy(self.w))
                 #print(self.allw)
 # ------------------------ 
+class ClassifierKNN_MC(Classifier):
+    """ Classe pour représenter un classifieur par K plus proches voisins.
+        Cette classe hérite de la classe Classifier'
+    """
+    
+    def __init__(self, input_dimension, k):
+        """ Constructeur de Classifier
+            Argument:
+                - intput_dimension (int) : dimension d'entrée des exemples
+                - k (int) : nombre de voisins à considérer
+            Hypothèse : input_dimension > 0
+        """
+        super().__init__(input_dimension)
+        self.k = k
+        
+    def train(self, desc_set, label_set):
+        """ Permet d'entrainer le modele sur l'ensemble donné
+            desc_set: ndarray avec des descriptions
+            label_set: ndarray avec les labels correspondants
+            Hypothèse: desc_set et label_set ont le même nombre de lignes
+        """        
+        self.desc_set = desc_set
+        self.label_set = label_set
+        
+            
+    def predict(self, x):
+        """ Rend la prédiction sur x en utilisant le vote majoritaire.
+            x: une description : un ndarray
+            desc_set: ndarray avec des descriptions
+            label_set: ndarray avec les labels correspondants
+        """
+        # Calculer les distances entre x et toutes les descriptions dans desc_set
+        distances = [np.linalg.norm(x - y) for y in self.desc_set]
+        
+        # Trier les indices des descriptions en fonction de leurs distances par rapport à x
+        sorted_indices = np.argsort(distances)
+
+         # Sélectionner les k premières étiquettes correspondant aux k voisins les plus proches
+        k_nearest_labels = self.label_set[sorted_indices[:self.k]].flatten()
+        
+        # Compter le nombre d'occurrences de chaque étiquette
+        label_counts = {}
+        for label in np.unique(self.label_set):
+            label_counts[label] = 0
+
+        for label in k_nearest_labels:
+            label_counts[label] = label_counts[label] + 1
+        
+        
+        # Trouver l'étiquette avec le plus grand nombre d'occurrences
+        majority_vote = max(label_counts, key=label_counts.get)
+        return majority_vote
+
+   
 
 # Vous pouvez avoir besoin d'utiliser la fonction deepcopy de la librairie standard copy:
 import copy 
