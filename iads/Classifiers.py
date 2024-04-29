@@ -73,7 +73,7 @@ class Classifier:
         return accuracy
         """
         yhat = np.array([self.predict(x) for x in desc_set])
-        print(label_set.flatten(), yhat)
+        #print(label_set.flatten(), yhat)
         return np.where(label_set.flatten() == yhat, 1., 0.).mean()
         
 # ------------------------------
