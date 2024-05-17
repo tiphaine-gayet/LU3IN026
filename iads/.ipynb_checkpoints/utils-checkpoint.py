@@ -94,3 +94,17 @@ def create_XOR(n, var):
     labels = np.asarray([-1 for i in range(2*n)] + [+1 for i in range(2*n)])
     
     return descriptions, labels
+
+import matplotlib.cm as cm
+
+def affiche_resultat(Base,Centres,Affect):
+    """ DataFrame **2 * dict[int,list[int]] -> None
+    """
+    couleurs = cm.tab20(np.linspace(0,1,20))
+    
+    plt.scatter(Centres[:,0],Centres[:,1],color='r',marker='x')
+
+    for i in Affect.keys():
+        plt.scatter(Base.iloc[Affect[i]]['X1'],Base.iloc[Affect[i]]['X2'],color=couleurs[i])
+        
+    plt.show()
